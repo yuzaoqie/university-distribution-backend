@@ -1,12 +1,11 @@
 CREATE TABLE universities (
     id SERIAL PRIMARY KEY,  -- 主键，自增的大学ID
     name VARCHAR(100) NOT NULL,  -- 大学名称
-    province_id INT REFERENCES provinces(id),  -- 省份ID，外键，关联到 provinces 表
+    province_name VARCHAR(100),  -- 省份名称
     established_year INT,  -- 成立年份
-    type VARCHAR(50) NOT NULL,  -- 类型，例如 '本科' 或 '专科'
+    type VARCHAR(50) NOT NULL,  -- 类型，例如985、211、双一流等信息
     address VARCHAR(255),  -- 地址，可选
     website VARCHAR(255),  -- 官方网站，可选
-    strength_description TEXT,  -- 学校实力的具体描述，例如包含985、211、双一流等信息
     motto TEXT,  -- 校训
     description TEXT,  -- 大学描述
     history TEXT,  -- 学校历史
@@ -21,6 +20,5 @@ CREATE TABLE universities (
     notable_alumni TEXT,  -- 知名校友
     contact_phone VARCHAR(20),  -- 联系电话
     contact_email VARCHAR(100),  -- 联系邮箱
-    enrollment_address VARCHAR(255),  -- 招生办地址
     campus_activities TEXT  -- 校园活动与文化
 );
