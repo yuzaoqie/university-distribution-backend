@@ -27,6 +27,7 @@ type JuniorCollege struct {
 	ContactPhone        string `json:"contact_phone"`
 	ContactEmail        string `json:"contact_email"`
 	CampusActivities    string `json:"campus_activities"`
+	PlanDiagramPath     string `json:"plan_diagram_path"`
 }
 
 // GetAllJuniorColleges 获取所有专科学校
@@ -53,7 +54,8 @@ func GetAllJuniorColleges() ([]JuniorCollege, error) {
 			notable_alumni, 
 			contact_phone, 
 			contact_email, 
-			campus_activities 
+			campus_activities,
+			plan_diagram_path
 		FROM junior_colleges`
 	rows, err := config.DB.Query(query)
 	if err != nil {
@@ -64,7 +66,7 @@ func GetAllJuniorColleges() ([]JuniorCollege, error) {
 	juniorColleges := []JuniorCollege{}
 	for rows.Next() {
 		var jc JuniorCollege
-		if err := rows.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities); err != nil {
+		if err := rows.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities, &jc.PlanDiagramPath); err != nil {
 			return nil, err
 		}
 		juniorColleges = append(juniorColleges, jc)
@@ -98,7 +100,8 @@ func GetJuniorCollegesByProvince(provinceName string) ([]JuniorCollege, error) {
 			notable_alumni, 
 			contact_phone, 
 			contact_email, 
-			campus_activities 
+			campus_activities, 
+			plan_diagram_path
         FROM junior_colleges 
     	WHERE province_name = $1`
 
@@ -111,7 +114,7 @@ func GetJuniorCollegesByProvince(provinceName string) ([]JuniorCollege, error) {
 	juniorColleges := []JuniorCollege{}
 	for rows.Next() {
 		var jc JuniorCollege
-		if err := rows.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities); err != nil {
+		if err := rows.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities, &jc.PlanDiagramPath); err != nil {
 			return nil, err
 		}
 		juniorColleges = append(juniorColleges, jc)
@@ -144,7 +147,8 @@ func GetJuniorCollegeByName(juniorCollegeName string) (*JuniorCollege, error) {
 			notable_alumni, 
 			contact_phone, 
 			contact_email, 
-			campus_activities 
+			campus_activities,
+			plan_diagram_path
 		FROM junior_colleges 
 		WHERE name = $1`
 
@@ -152,7 +156,7 @@ func GetJuniorCollegeByName(juniorCollegeName string) (*JuniorCollege, error) {
 
 	// TODO 有必要吗: 将数据库查询结果映射到JuniorCollege结构体
 	var jc JuniorCollege
-	if err := row.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities); err != nil {
+	if err := row.Scan(&jc.ID, &jc.Name, &jc.ProvinceName, &jc.EstablishedYear, &jc.Type, &jc.Address, &jc.Website, &jc.Motto, &jc.Description, &jc.History, &jc.PublicPrivate, &jc.LogoPath, &jc.BackgroundImagePath, &jc.DisciplineCategory, &jc.GraduatePoints, &jc.FacultyStrength, &jc.ResearchStrength, &jc.NotableAlumni, &jc.ContactPhone, &jc.ContactEmail, &jc.CampusActivities, &jc.PlanDiagramPath); err != nil {
 		return nil, err
 	}
 

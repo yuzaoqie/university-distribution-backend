@@ -19,5 +19,6 @@ CREATE TABLE junior_colleges (
   notable_alumni TEXT,  -- 知名校友
   contact_phone VARCHAR(20),  -- 联系电话
   contact_email VARCHAR(100),  -- 联系邮箱
-  campus_activities TEXT  -- 校园活动与文化
+  campus_activities TEXT,  -- 校园活动与文化
+  plan_diagram_path VARCHAR(255) -- 校园平面图的文件路径
 );

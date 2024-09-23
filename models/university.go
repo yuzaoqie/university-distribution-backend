@@ -27,11 +27,12 @@ type University struct {
 	ContactPhone        string `json:"contact_phone"`         // 联系电话
 	ContactEmail        string `json:"contact_email"`         // 联系邮箱
 	CampusActivities    string `json:"campus_activities"`     // 校园活动与文化
+	PlanDiagramPath     string `json:"plan_diagram_path"`     // 校园平面图的文件路径
 }
 
 // 获取所有大学
 func GetAllUniversities() ([]University, error) {
-	rows, err := config.DB.Query("SELECT id, name, province_name, established_year, type, address, website, motto, description, history, enrollment_website, public_private, logo_path, background_image_path, discipline_category, graduate_points, faculty_strength, research_strength, notable_alumni, contact_phone, contact_email, campus_activities FROM universities")
+	rows, err := config.DB.Query("SELECT id, name, province_name, established_year, type, address, website, motto, description, history, enrollment_website, public_private, logo_path, background_image_path, discipline_category, graduate_points, faculty_strength, research_strength, notable_alumni, contact_phone, contact_email, campus_activities, plan_diagram_path FROM universities")
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func GetAllUniversities() ([]University, error) {
 	universities := []University{}
 	for rows.Next() {
 		var u University
-		if err := rows.Scan(&u.ID, &u.Name, &u.ProvinceName, &u.EstablishedYear, &u.Type, &u.Address, &u.Website, &u.Motto, &u.Description, &u.History, &u.EnrollmentWebsite, &u.PublicPrivate, &u.LogoPath, &u.BackgroundImagePath, &u.DisciplineCategory, &u.GraduatePoints, &u.FacultyStrength, &u.ResearchStrength, &u.NotableAlumni, &u.ContactPhone, &u.ContactEmail, &u.CampusActivities); err != nil {
+		if err := rows.Scan(&u.ID, &u.Name, &u.ProvinceName, &u.EstablishedYear, &u.Type, &u.Address, &u.Website, &u.Motto, &u.Description, &u.History, &u.EnrollmentWebsite, &u.PublicPrivate, &u.LogoPath, &u.BackgroundImagePath, &u.DisciplineCategory, &u.GraduatePoints, &u.FacultyStrength, &u.ResearchStrength, &u.NotableAlumni, &u.ContactPhone, &u.ContactEmail, &u.CampusActivities, &u.PlanDiagramPath); err != nil {
 			return nil, err
 		}
 		universities = append(universities, u)
@@ -74,7 +75,8 @@ func GetUniversitiesByProvince(provinceName string) ([]University, error) {
             notable_alumni, 
             contact_phone, 
             contact_email, 
-            campus_activities
+            campus_activities,
+			plan_diagram_path
         FROM universities
         WHERE province_name = $1;
     `
@@ -110,7 +112,8 @@ func GetUniversitiesByProvince(provinceName string) ([]University, error) {
 			&u.NotableAlumni,
 			&u.ContactPhone,
 			&u.ContactEmail,
-			&u.CampusActivities); err != nil {
+			&u.CampusActivities,
+			&u.PlanDiagramPath); err != nil {
 			return nil, err
 		}
 		universities = append(universities, u)
@@ -144,7 +147,8 @@ func GetUniversityByName(universityName string) (*University, error) {
             notable_alumni, 
             contact_phone, 
             contact_email, 
-            campus_activities
+            campus_activities,
+			plan_diagram_path
         FROM universities 
         WHERE name = $1;
     `
@@ -173,6 +177,7 @@ func GetUniversityByName(universityName string) (*University, error) {
 		&university.ContactPhone,
 		&university.ContactEmail,
 		&university.CampusActivities,
+		&university.PlanDiagramPath,
 	)
 
 	if err != nil {
