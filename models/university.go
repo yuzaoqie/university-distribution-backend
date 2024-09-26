@@ -28,11 +28,18 @@ type University struct {
 	ContactEmail        string `json:"contact_email"`         // 联系邮箱
 	CampusActivities    string `json:"campus_activities"`     // 校园活动与文化
 	PlanDiagramPath     string `json:"plan_diagram_path"`     // 校园平面图的文件路径
+	Level               string `json:"level"`                 // 学校层次，例如 本科、专科
+}
+
+// ProvinceUniversityCount 存储省份名称和高校数量
+type ProvinceUniversityCount struct {
+	ProvinceName    string `json:"province_name"`
+	UniversityCount int    `json:"university_count"`
 }
 
 // 获取所有大学
 func GetAllUniversities() ([]University, error) {
-	rows, err := config.DB.Query("SELECT id, name, province_name, established_year, type, address, website, motto, description, history, enrollment_website, public_private, logo_path, background_image_path, discipline_category, graduate_points, faculty_strength, research_strength, notable_alumni, contact_phone, contact_email, campus_activities, plan_diagram_path FROM universities")
+	rows, err := config.DB.Query("SELECT id, name, province_name, established_year, type, address, website, motto, description, history, enrollment_website, public_private, logo_path, background_image_path, discipline_category, graduate_points, faculty_strength, research_strength, notable_alumni, contact_phone, contact_email, campus_activities, plan_diagram_path, level FROM universities")
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +48,7 @@ func GetAllUniversities() ([]University, error) {
 	universities := []University{}
 	for rows.Next() {
 		var u University
-		if err := rows.Scan(&u.ID, &u.Name, &u.ProvinceName, &u.EstablishedYear, &u.Type, &u.Address, &u.Website, &u.Motto, &u.Description, &u.History, &u.EnrollmentWebsite, &u.PublicPrivate, &u.LogoPath, &u.BackgroundImagePath, &u.DisciplineCategory, &u.GraduatePoints, &u.FacultyStrength, &u.ResearchStrength, &u.NotableAlumni, &u.ContactPhone, &u.ContactEmail, &u.CampusActivities, &u.PlanDiagramPath); err != nil {
+		if err := rows.Scan(&u.ID, &u.Name, &u.ProvinceName, &u.EstablishedYear, &u.Type, &u.Address, &u.Website, &u.Motto, &u.Description, &u.History, &u.EnrollmentWebsite, &u.PublicPrivate, &u.LogoPath, &u.BackgroundImagePath, &u.DisciplineCategory, &u.GraduatePoints, &u.FacultyStrength, &u.ResearchStrength, &u.NotableAlumni, &u.ContactPhone, &u.ContactEmail, &u.CampusActivities, &u.PlanDiagramPath, &u.Level); err != nil {
 			return nil, err
 		}
 		universities = append(universities, u)
@@ -76,7 +83,8 @@ func GetUniversitiesByProvince(provinceName string) ([]University, error) {
             contact_phone, 
             contact_email, 
             campus_activities,
-			plan_diagram_path
+			plan_diagram_path,
+			level
         FROM universities
         WHERE province_name = $1;
     `
@@ -113,7 +121,8 @@ func GetUniversitiesByProvince(provinceName string) ([]University, error) {
 			&u.ContactPhone,
 			&u.ContactEmail,
 			&u.CampusActivities,
-			&u.PlanDiagramPath); err != nil {
+			&u.PlanDiagramPath,
+			&u.Level); err != nil {
 			return nil, err
 		}
 		universities = append(universities, u)
@@ -148,7 +157,8 @@ func GetUniversityByName(universityName string) (*University, error) {
             contact_phone, 
             contact_email, 
             campus_activities,
-			plan_diagram_path
+			plan_diagram_path,
+			level
         FROM universities 
         WHERE name = $1;
     `
@@ -178,6 +188,7 @@ func GetUniversityByName(universityName string) (*University, error) {
 		&university.ContactEmail,
 		&university.CampusActivities,
 		&university.PlanDiagramPath,
+		&university.Level,
 	)
 
 	if err != nil {
@@ -185,4 +196,59 @@ func GetUniversityByName(universityName string) (*University, error) {
 	}
 
 	return &university, nil
+}
+
+// 获取每个省的高校数量
+func GetUniversityCountByProvince() ([]ProvinceUniversityCount, error) {
+	query := `
+        SELECT province_name, COUNT(*) as university_count
+        FROM universities
+        GROUP BY province_name;
+    `
+
+	rows, err := config.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	provinceUniversityCounts := []ProvinceUniversityCount{}
+	for rows.Next() {
+		var puc ProvinceUniversityCount
+		if err := rows.Scan(&puc.ProvinceName, &puc.UniversityCount); err != nil {
+			return nil, err
+		}
+		provinceUniversityCounts = append(provinceUniversityCounts, puc)
+	}
+
+	return provinceUniversityCounts, nil
+}
+
+// 获取本科院校数量 TOP10 的省份
+func GetTop10Provinces() ([]ProvinceUniversityCount, error) {
+	query := `
+		SELECT province_name, COUNT(*) as count
+		FROM universities
+		WHERE level = '本科' -- 只计算本科院校
+		GROUP BY province_name
+		ORDER BY count DESC
+		LIMIT 10;
+	`
+
+	rows, err := config.DB.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var provinces []ProvinceUniversityCount
+	for rows.Next() {
+		var province ProvinceUniversityCount
+		if err := rows.Scan(&province.ProvinceName, &province.UniversityCount); err != nil {
+			return nil, err
+		}
+		provinces = append(provinces, province)
+	}
+
+	return provinces, nil
 }

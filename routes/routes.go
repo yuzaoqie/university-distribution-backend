@@ -12,11 +12,8 @@ func SetupRoutes(router *gin.Engine) {
 	router.GET("/api/universitiesByProvinceMap/:provinceName", controllers.GetUniversitiesByProvince)
 	// 根据大学名称获取大学信息
 	router.GET("/api/universities/:universityName", controllers.GetUniversityByName)
-
-	// 获取所有专科学校信息
-	router.GET("/api/juniorColleges", controllers.GetAllJuniorColleges)
-	// 根据省份名称获取专科学校列表
-	router.GET("/api/juniorCollegesByProvinceMap/:provinceName", controllers.GetJuniorCollegesByProvince)
-	// 根据专科学校名称获取专科学校信息
-	router.GET("/api/juniorColleges/:juniorCollegeName", controllers.GetJuniorCollegeByName)
+	// 获取每个省的高校数量
+	router.GET("/api/universityCount", controllers.GetUniversityCountByProvince)
+	// 获取本科院校数量 TOP10 的省份
+	router.GET("/api/top10Provinces", controllers.GetTop10Provinces)
 }

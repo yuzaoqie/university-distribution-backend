@@ -18,3 +18,13 @@ func GetUniversitiesByProvince(provinceName string) ([]models.University, error)
 func GetUniversityByName(universityName string) (*models.University, error) {
     return models.GetUniversityByName(universityName);
 }
+
+// 获取每个省的高校数量
+func GetUniversityCountByProvince() ([]models.ProvinceUniversityCount, error) {
+    return models.GetUniversityCountByProvince();
+}
+
+// 获取本科院校数量 TOP10 的省份
+func GetTop10Provinces() ([]models.ProvinceUniversityCount, error) {
+    return models.GetTop10Provinces();
+}

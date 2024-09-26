@@ -60,3 +60,24 @@ func GetUniversityByName(c *gin.Context) {
 	// 返回大学信息
 	c.JSON(http.StatusOK, university)
 }
+
+// 获取每个省的高校数量
+func GetUniversityCountByProvince(c *gin.Context) {
+	provinceUniversityCounts, err := services.GetUniversityCountByProvince()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "无法获取大学数量"})
+		return
+	}
+
+	c.JSON(http.StatusOK, provinceUniversityCounts)
+}
+
+// 获取本科院校数量 TOP10 的省份
+func GetTop10Provinces(c *gin.Context) {
+	provinces, err := services.GetTop10Provinces()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error fetching data"})
+		return
+	}
+	c.JSON(http.StatusOK, provinces)
+}
